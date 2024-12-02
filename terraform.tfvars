@@ -1,0 +1,11 @@
+project_id          = "trainer-gketraining21"
+region             = "asia-south1"
+zone               = "asia-south1-a"
+vpc_name           = "gke-vpc"
+public_subnet_cidr  = "10.0.1.0/24"
+private_subnet_cidr = "10.0.2.0/24"
+pod_range_cidr     = "10.1.0.0/16"
+service_range_cidr = "10.2.0.0/16"
+cluster_name       = "gke-cluster"
+node_pool_count    = 2
+machine_type       = "e2-medium"
