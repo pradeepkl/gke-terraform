@@ -1,6 +1,7 @@
 resource "google_compute_firewall" "allow_internal" {
   name    = "allow-internal"
   network = google_compute_network.vpc.id
+  project = var.project_id
 
   allow {
     protocol = "tcp"
@@ -20,6 +21,7 @@ resource "google_compute_firewall" "allow_internal" {
 resource "google_compute_firewall" "allow_health_check" {
   name    = "allow-health-check"
   network = google_compute_network.vpc.id
+  project = var.project_id
 
   allow {
     protocol = "tcp"

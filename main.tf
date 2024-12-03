@@ -3,7 +3,7 @@
 
 terraform {
   backend "gcs" {
-    bucket = "tf-state-gke-cluster"
+    bucket = "tf-state-gke-cluster-training"
     prefix = "terraform/state"
   }
 }
@@ -29,11 +29,22 @@ resource "google_project_service" "services" {
   disable_on_destroy        = false
 }
 
-# IAM role for GKE service account
+data "google_service_account" "default_node_pool" {
+  account_id = "default-node-pool"
+  project    = "trainer-gketraining21"
+}
+
+resource "google_service_account" "gke_node_service_account" {
+  count        = data.google_service_account.default_node_pool.id == null ? 1 : 0
+  account_id   = "default-node-pool"
+  display_name = "GKE Node Service Account"
+  project      = "trainer-gketraining21"
+}
+
 resource "google_project_iam_member" "gke_sa" {
-  project = var.project_id
+  project = "trainer-gketraining21"
   role    = "roles/container.nodeServiceAccount"
-  member  = "serviceAccount:${var.project_id}.svc.id.goog[default/default]"
+  member  = "serviceAccount:${data.google_service_account.default_node_pool.id != null ? data.google_service_account.default_node_pool.email : google_service_account.gke_node_service_account[0].email}"
 
   depends_on = [
     google_container_cluster.primary
